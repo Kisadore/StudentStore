@@ -5,6 +5,7 @@ const morgan = require("morgan");;
 
 const productRoutes = require("./routes/productRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const orderitemRoutes = require("./routes/orderitemRoutes");
 
 
 
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
+app.use("/orderitems", orderitemRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}!`);

@@ -57,10 +57,30 @@ const deleteOrder = async (req, res) => {
     }
 };
 
+const AddItemToExistingOrder = async (req, res) => {
+  try {
+    const addedItem = await orderModel.AddItemToExistingOrder(req.params.order_id, req.body);
+    res.status(201).json(addedItem);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const calculateOrderTotal = async (req, res) => {
+  try {
+      const total = await orderModel.calculateOrderTotal(req.params.order_id);
+      res.status(200).json({ total });
+  } catch (error) {
+      res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
     getAllOrders,
     getOrderById,
     createOrder,
     updateOrder,
-    deleteOrder
+    deleteOrder,
+    AddItemToExistingOrder,
+    calculateOrderTotal
   };
