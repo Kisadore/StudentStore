@@ -5,9 +5,6 @@ const getAllOrderItems = async () => {
     return prisma.orderItem.findMany();
 };
 
-// const createOrderItem = async (productData) => {
-//     return prisma.product.create({data: productData });
-// };
 const getOrderItemsById = async (id) => {
     return prisma.orderItem.findUnique({ where: { id: parseInt(id) } });
   };

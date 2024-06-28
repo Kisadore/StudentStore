@@ -11,12 +11,25 @@ const getAllOrders = async () => {
 
 const getOrderById = async (order_id) => {
     return prisma.order.findUnique({where: {order_id: parseInt(order_id)}, include: { OrderItems: true } });
-    //add include orderitems
-};
+}
+
 
 const createOrder = async (orderData) => {
-    return prisma.order.create({data: orderData});
-};
+    return prisma.order.create({
+      data: {
+        customer_id: orderData.customer_id,
+        total_price: orderData.total_price,
+        status: orderData.status,
+        OrderItems: {
+          create: orderData.OrderItems.map(item => ({
+            product_id: item.productId,
+            quantity: item.quantity,
+            price: item.price,
+          }))
+        }
+      }
+    });
+  };
 
 const updateOrder = async (order_id, orderData) => {
     return prisma.order.update({
@@ -28,26 +41,32 @@ const updateOrder = async (order_id, orderData) => {
 const deleteOrder = async (order_id) => {
     return prisma.order.delete({where: {order_id: parseInt(order_id)}});
 };
-const AddItemToExistingOrder = async (order_id, itemData) => {
-    const order = await getOrderById(order_id);
-    if (!order){
-        throw new Error("Order not found");
-    }
-    return prisma.orderItem.create({
-        data:{
+
+
+const addItemToExistingOrder = async (order_id, itemData) => {
+    const orderItem = await prisma.orderItem.create({
+        data: {
             order_id: parseInt(order_id),
-            ...itemData
+            product_id: itemData.product_id,
+            quantity: itemData.quantity,
+            price: itemData.price
         }
     });
+
+    const updatedTotal = await calculateOrderTotal(order_id);
+    await prisma.order.update({
+        where: { order_id: parseInt(order_id) },
+        data: { total_price: updatedTotal }
+    });
+
+    return orderItem;
 };
+
 
 const calculateOrderTotal = async (order_id) => {
     const order = await getOrderById(order_id);
-    if (!order) {
-        throw new Error("Order not found");
-    }
     const total = order.OrderItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    return total;
+    return parseFloat(total.toFixed(2));
 };
 
 module.exports = {
@@ -56,6 +75,6 @@ module.exports = {
     createOrder,
     updateOrder,
     deleteOrder,
-    AddItemToExistingOrder,
+    addItemToExistingOrder,
     calculateOrderTotal
 }

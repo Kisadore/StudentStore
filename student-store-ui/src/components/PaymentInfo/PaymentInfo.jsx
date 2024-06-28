@@ -15,7 +15,7 @@ export default function PaymentInfo({ userInfo, setUserInfo, handleOnCheckout, i
           <input
             className="input"
             type="text"
-            placeholder="Name"
+            placeholder="ID"
             value={userInfo.name}
             onChange={(e) => setUserInfo((u) => ({ ...u, name: e.target.value }))}
           />
@@ -23,19 +23,19 @@ export default function PaymentInfo({ userInfo, setUserInfo, handleOnCheckout, i
       </div>
 
       <div className="input-field">
-        <label className="label">Dorm Room Number</label>
+        <label className="label">Email</label>
         <div className="control">
           <input
             className="input"
             type="email"
-            placeholder="Email"
+            placeholder="email"
             value={userInfo.id}
             onChange={(e) => setUserInfo((u) => ({ ...u, email: e.target.value }))}
           />
         </div>
       </div>
 
-      {/* <div className="field">
+      <div className="field">
         <div className="control">
           <label className="checkbox">
             <input
@@ -48,7 +48,7 @@ export default function PaymentInfo({ userInfo, setUserInfo, handleOnCheckout, i
             </span>
           </label>
         </div>
-      </div> */}
+      </div>
 
       <p className="is-danger">{error}</p>
 

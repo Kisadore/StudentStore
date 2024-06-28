@@ -12,7 +12,26 @@ function ProductDetail({ addToCart, removeFromCart, getQuantityOfItemInCart }) {
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState(null);
 
+  //make const baseURL = "http......."
+  const baseURL = "http://localhost:3000";
 
+  useEffect(() => {
+    const fetchProduct = async () => {
+      setIsFetching(true);
+      try {
+        const response = await axios.get(`${baseURL}/products/${productId}`);
+        setProduct(response.data);
+        setError(null);
+      } catch (error) {
+        setError("Error fetching product");
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchProduct();
+  }, [productId, baseURL]);
+  
   if (error) {
     return <NotFound />;
   }

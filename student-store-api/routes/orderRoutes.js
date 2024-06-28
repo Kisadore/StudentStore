@@ -5,7 +5,7 @@ const orderController = require("../controllers/orderController");
 router.get("/", orderController.getAllOrders);
 router.get("/:order_id", orderController.getOrderById);
 
-router.post("/:order_id/items", orderController.AddItemToExistingOrder);
+router.post("/:order_id/items", orderController.addItemToExistingOrder);
 router.get("/:order_id/total", orderController.calculateOrderTotal);
 
 router.post("/", orderController.createOrder);

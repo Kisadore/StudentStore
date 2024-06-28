@@ -57,14 +57,44 @@ const deleteOrder = async (req, res) => {
     }
 };
 
-const AddItemToExistingOrder = async (req, res) => {
+// const AddItemToExistingOrder = async (req, res) => {
+//   try {
+//     const addedItem = await orderModel.AddItemToExistingOrder(req.params.order_id, req.body);
+//     res.status(201).json(addedItem);
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
+const addItemToExistingOrder = async (req, res) => {
   try {
-    const addedItem = await orderModel.AddItemToExistingOrder(req.params.order_id, req.body);
-    res.status(201).json(addedItem);
+      const order = await orderModel.getOrderById(req.params.order_id);
+      if (!order) {
+          return res.status(404).json({ error: "Order not found" });
+      }
+
+      const product = await prisma.product.findUnique({
+          where: { id: req.body.product_id }
+      });
+
+      if (!product) {
+          return res.status(404).json({ error: "Product not found" });
+      }
+
+      const addedItem = await orderModel.addItemToExistingOrder(req.params.order_id, req.body);
+      res.status(201).json(addedItem);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
   }
 };
+
+// const calculateOrderTotal = async (req, res) => {
+//   try {
+//       const total = await orderModel.calculateOrderTotal(req.params.order_id);
+//       res.status(200).json({ total });
+//   } catch (error) {
+//       res.status(400).json({ error: error.message });
+//   }
+// };
 
 const calculateOrderTotal = async (req, res) => {
   try {
@@ -81,6 +111,6 @@ module.exports = {
     createOrder,
     updateOrder,
     deleteOrder,
-    AddItemToExistingOrder,
+    addItemToExistingOrder,
     calculateOrderTotal
   };

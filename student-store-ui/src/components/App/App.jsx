@@ -23,6 +23,28 @@ function App() {
   const [error, setError] = useState(null);
   const [order, setOrder] = useState(null);
 
+  //make const baseURL = "http......."
+
+  const baseURL = "http://localhost:3000";
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsFetching(true);
+      try {
+        const response = await axios.get(`${baseURL}/products`);
+        setProducts(response.data);
+        setError(null);
+      } catch (error) {
+        setError("Error fetching products");
+      } finally {
+        setIsFetching(false);
+      }
+    };
+
+    fetchProducts();
+  }, [baseURL]);
+
+
   // Toggles sidebar
   const toggleSidebar = () => setSidebarOpen((isOpen) => !isOpen);
 
@@ -35,9 +57,43 @@ function App() {
   const handleOnSearchInputChange = (event) => {
     setSearchInputValue(event.target.value);
   };
+  //deleting orders
+  //delete cascade
+    //add , onDelete: Cascade after
+
 
   const handleOnCheckout = async () => {
-  }
+    setIsCheckingOut(true);
+    try {
+      // Calculate total price
+      const total_price = Object.keys(cart).reduce((total, productId) => {
+        const product = products.find(p => p.id === parseInt(productId));
+        return total + (product.price * cart[productId]);
+      }, 0);
+      const orderItemsData = Object.keys(cart).map(productId =>
+        ({
+          productId: parseInt(productId), 
+          quantity: cart[productId],
+          price: products.find(p => p.id === parseInt(productId)).price,
+        }));
+      // Create order content
+      const orderContent = {
+        customer_id: parseInt(userInfo.name),
+        total_price: total_price,
+        status: "completed",
+        OrderItems: orderItemsData
+      };
+      console.log(orderContent);
+      const response = await axios.post(`http://localhost:3000/orders`, orderContent);
+      setOrder(response.data);
+      setIsCheckingOut(false);
+      setCart({});
+      setUserInfo({name: "", id: "",});
+    } catch (error) {
+      setError(error.response ? error.response.data.error : error.message);
+      setIsCheckingOut(false);
+    }
+  };
 
 
   return (
