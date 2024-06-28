@@ -2,7 +2,6 @@
 
 Submitted by: **Kiahna Isadore**
 
-Deployed Application (optional): [Student Store Deployed Site](ADD_LINK_HERE)
 
 ### Application Features
 
