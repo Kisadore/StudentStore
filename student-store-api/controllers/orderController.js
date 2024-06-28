@@ -87,14 +87,6 @@ const addItemToExistingOrder = async (req, res) => {
   }
 };
 
-// const calculateOrderTotal = async (req, res) => {
-//   try {
-//       const total = await orderModel.calculateOrderTotal(req.params.order_id);
-//       res.status(200).json({ total });
-//   } catch (error) {
-//       res.status(400).json({ error: error.message });
-//   }
-// };
 
 const calculateOrderTotal = async (req, res) => {
   try {

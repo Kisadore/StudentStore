@@ -28,19 +28,17 @@ const updateProduct = async (id, productData) => {
 
   const deleteProduct = async (id) => {
     try {
-      // Check if there are any OrderItems referencing this product
+
       const existingOrders = await prisma.orderItem.findMany({
         where: {
-          product_id: parseInt(id), // Corrected to use `product_id` instead of `productId`
+          product_id: parseInt(id),
         },
       });
   
       if (existingOrders.length > 0) {
-        // Handle the case where there are related OrderItems
         throw new Error('Cannot delete product because it is referenced by existing orders.');
       }
   
-      // If no related OrderItems, proceed with deletion
       return prisma.product.delete({ where: { id: parseInt(id) } });
     } catch (error) {
       throw new Error(`Failed to delete product: ${error.message}`);
